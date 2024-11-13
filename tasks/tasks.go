@@ -29,11 +29,30 @@ func ListTasks(tasks []Task) {
 
 func AddTask(tasks []Task, name string) []Task {
 	newTask := Task{
-		ID:       10,
+		ID:       GetNextID(tasks),
 		Name:     name,
 		Complete: false,
 	}
 	return append(tasks, newTask)
+}
+
+func DeleteTask(tasks []Task, id int) []Task {
+	for i, task := range tasks {
+		if task.ID == id {
+			return append(tasks[:i], tasks[i+1:]...)
+		}
+	}
+	return tasks
+}
+
+func CompleteTask(tasks []Task, id int) []Task {
+	for i, task := range tasks {
+		if task.ID == id {
+			tasks[i].Complete = !tasks[i].Complete
+			break
+		}
+	}
+	return tasks
 }
 
 func SaveTasks(file *os.File, tasks []Task) {
@@ -59,4 +78,11 @@ func SaveTasks(file *os.File, tasks []Task) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func GetNextID(tasks []Task) int {
+	if len(tasks) == 0 {
+		return 1
+	}
+	return tasks[len(tasks)-1].ID + 1
 }

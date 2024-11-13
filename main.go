@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
 	task "github.com/Mauxx-Studio/go-cli-crud/tasks"
@@ -42,6 +43,7 @@ func main() {
 
 	if len(os.Args) < 2 {
 		printUsage()
+		return
 	}
 
 	switch os.Args[1] {
@@ -55,6 +57,30 @@ func main() {
 
 		tasks = task.AddTask(tasks, name)
 		task.ListTasks(tasks)
+		task.SaveTasks(file, tasks)
+	case "delete":
+		if len(os.Args) < 3 {
+			fmt.Println("Debes proporcionar un ID de tarea")
+			return
+		}
+		id, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			fmt.Println("El ID debe ser un numero")
+			return
+		}
+		tasks = task.DeleteTask(tasks, id)
+		task.SaveTasks(file, tasks)
+	case "complete":
+		if len(os.Args) < 3 {
+			fmt.Println("Debes proporcionar un ID de tarea")
+			return
+		}
+		id, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			fmt.Println("El ID debe ser un numero")
+			return
+		}
+		task.CompleteTask(tasks, id)
 		task.SaveTasks(file, tasks)
 	}
 }
